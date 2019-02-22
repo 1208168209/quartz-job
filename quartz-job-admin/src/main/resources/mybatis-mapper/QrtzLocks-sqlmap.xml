@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzLocksMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzLocks" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="lockName" javaType="String" property="lockName" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_LOCKS_COLUMN">
+					ql.SCHED_NAME schedName,					ql.LOCK_NAME lockName			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_LOCKS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND ql.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="lockName !=null and lockName.length()!=0 ">
+								AND ql.LOCK_NAME=#{lockName}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzLocks" resultType="QrtzLocks">
+		select <include  refid="SQL_QRTZ_LOCKS_COLUMN"/>
+		from QRTZ_LOCKS ql
+		<where>
+			<include  refid="SQL_QRTZ_LOCKS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							ql.SCHED_NAME desc
+							ql.LOCK_NAME desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzLocks" resultType="int">
+		select count(*) as counts
+		from QRTZ_LOCKS ql
+		<where>
+			<include  refid="SQL_QRTZ_LOCKS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzLocks">
+		select <include  refid="SQL_QRTZ_LOCKS_COLUMN"/>
+		from QRTZ_LOCKS ql
+		<where>
+							ql.SCHED_NAME = #{idValue}
+							ql.LOCK_NAME = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzLocks" >
+			insert into QRTZ_LOCKS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="lockName != null">
+        		LOCK_NAME,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="lockName != null">
+				#{lockName,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzLocks">
+		UPDATE QRTZ_LOCKS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="lockName !=null">
+				LOCK_NAME = #{lockName}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					LOCK_NAME=#{lockName} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzLocks">
+		DELETE FROM QRTZ_LOCKS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					LOCK_NAME=#{lockName} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_locks
+		WHERE
+					SCHED_NAME=#{schedName}  and 					LOCK_NAME=#{lockName} 			</delete>
+
+</mapper>

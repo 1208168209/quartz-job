@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzSimpropTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzSimpropTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="strProp1" javaType="String" property="strProp1" />
+												<result column="strProp2" javaType="String" property="strProp2" />
+												<result column="strProp3" javaType="String" property="strProp3" />
+												<result column="intProp1" javaType="Integer" property="intProp1" />
+												<result column="intProp2" javaType="Integer" property="intProp2" />
+												<result column="longProp1" javaType="String" property="longProp1" />
+												<result column="longProp2" javaType="String" property="longProp2" />
+												<result column="decProp1" javaType="String" property="decProp1" />
+												<result column="decProp2" javaType="String" property="decProp2" />
+												<result column="boolProp1" javaType="String" property="boolProp1" />
+												<result column="boolProp2" javaType="String" property="boolProp2" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_SIMPROP_TRIGGERS_COLUMN">
+					qst.SCHED_NAME schedName,					qst.TRIGGER_NAME triggerName,					qst.TRIGGER_GROUP triggerGroup,					qst.STR_PROP_1 strProp1,					qst.STR_PROP_2 strProp2,					qst.STR_PROP_3 strProp3,					qst.INT_PROP_1 intProp1,					qst.INT_PROP_2 intProp2,					qst.LONG_PROP_1 longProp1,					qst.LONG_PROP_2 longProp2,					qst.DEC_PROP_1 decProp1,					qst.DEC_PROP_2 decProp2,					qst.BOOL_PROP_1 boolProp1,					qst.BOOL_PROP_2 boolProp2			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_SIMPROP_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qst.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qst.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qst.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="strProp1 !=null and strProp1.length()!=0 ">
+								AND qst.STR_PROP_1=#{strProp1}
+				</if>
+			        				<if test="strProp2 !=null and strProp2.length()!=0 ">
+								AND qst.STR_PROP_2=#{strProp2}
+				</if>
+			        				<if test="strProp3 !=null and strProp3.length()!=0 ">
+								AND qst.STR_PROP_3=#{strProp3}
+				</if>
+			        				<if test="intProp1 !=null ">
+								AND qst.INT_PROP_1=#{intProp1}
+				</if>
+			        				<if test="intProp2 !=null ">
+								AND qst.INT_PROP_2=#{intProp2}
+				</if>
+			        				<if test="longProp1 !=null and longProp1.length()!=0 ">
+								AND qst.LONG_PROP_1=#{longProp1}
+				</if>
+			        				<if test="longProp2 !=null and longProp2.length()!=0 ">
+								AND qst.LONG_PROP_2=#{longProp2}
+				</if>
+			        				<if test="decProp1 !=null and decProp1.length()!=0 ">
+								AND qst.DEC_PROP_1=#{decProp1}
+				</if>
+			        				<if test="decProp2 !=null and decProp2.length()!=0 ">
+								AND qst.DEC_PROP_2=#{decProp2}
+				</if>
+			        				<if test="boolProp1 !=null and boolProp1.length()!=0 ">
+								AND qst.BOOL_PROP_1=#{boolProp1}
+				</if>
+			        				<if test="boolProp2 !=null and boolProp2.length()!=0 ">
+								AND qst.BOOL_PROP_2=#{boolProp2}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzSimpropTriggers" resultType="QrtzSimpropTriggers">
+		select <include  refid="SQL_QRTZ_SIMPROP_TRIGGERS_COLUMN"/>
+		from QRTZ_SIMPROP_TRIGGERS qst
+		<where>
+			<include  refid="SQL_QRTZ_SIMPROP_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qst.SCHED_NAME desc
+							qst.TRIGGER_NAME desc
+							qst.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzSimpropTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_SIMPROP_TRIGGERS qst
+		<where>
+			<include  refid="SQL_QRTZ_SIMPROP_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzSimpropTriggers">
+		select <include  refid="SQL_QRTZ_SIMPROP_TRIGGERS_COLUMN"/>
+		from QRTZ_SIMPROP_TRIGGERS qst
+		<where>
+							qst.SCHED_NAME = #{idValue}
+							qst.TRIGGER_NAME = #{idValue}
+							qst.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzSimpropTriggers" >
+			insert into QRTZ_SIMPROP_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="strProp1 != null">
+        		STR_PROP_1,
+      		</if>
+      		 					<if test="strProp2 != null">
+        		STR_PROP_2,
+      		</if>
+      		 					<if test="strProp3 != null">
+        		STR_PROP_3,
+      		</if>
+      		 					<if test="intProp1 != null">
+        		INT_PROP_1,
+      		</if>
+      		 					<if test="intProp2 != null">
+        		INT_PROP_2,
+      		</if>
+      		 					<if test="longProp1 != null">
+        		LONG_PROP_1,
+      		</if>
+      		 					<if test="longProp2 != null">
+        		LONG_PROP_2,
+      		</if>
+      		 					<if test="decProp1 != null">
+        		DEC_PROP_1,
+      		</if>
+      		 					<if test="decProp2 != null">
+        		DEC_PROP_2,
+      		</if>
+      		 					<if test="boolProp1 != null">
+        		BOOL_PROP_1,
+      		</if>
+      		 					<if test="boolProp2 != null">
+        		BOOL_PROP_2,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="strProp1 != null">
+				#{strProp1,jdbcType=VARCHAR}, 
+			</if>
+								<if test="strProp2 != null">
+				#{strProp2,jdbcType=VARCHAR}, 
+			</if>
+								<if test="strProp3 != null">
+				#{strProp3,jdbcType=VARCHAR}, 
+			</if>
+								<if test="intProp1 != null">
+				#{intProp1,jdbcType=NUMERIC}, 
+			</if>
+								<if test="intProp2 != null">
+				#{intProp2,jdbcType=NUMERIC}, 
+			</if>
+								<if test="longProp1 != null">
+				#{longProp1,jdbcType=VARCHAR}, 
+			</if>
+								<if test="longProp2 != null">
+				#{longProp2,jdbcType=VARCHAR}, 
+			</if>
+								<if test="decProp1 != null">
+				#{decProp1,jdbcType=VARCHAR}, 
+			</if>
+								<if test="decProp2 != null">
+				#{decProp2,jdbcType=VARCHAR}, 
+			</if>
+								<if test="boolProp1 != null">
+				#{boolProp1,jdbcType=VARCHAR}, 
+			</if>
+								<if test="boolProp2 != null">
+				#{boolProp2,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzSimpropTriggers">
+		UPDATE QRTZ_SIMPROP_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="strProp1 !=null">
+				STR_PROP_1 = #{strProp1}  ,			</if>
+					<if test="strProp2 !=null">
+				STR_PROP_2 = #{strProp2}  ,			</if>
+					<if test="strProp3 !=null">
+				STR_PROP_3 = #{strProp3}  ,			</if>
+					<if test="intProp1 !=null">
+				INT_PROP_1 = #{intProp1}  ,			</if>
+					<if test="intProp2 !=null">
+				INT_PROP_2 = #{intProp2}  ,			</if>
+					<if test="longProp1 !=null">
+				LONG_PROP_1 = #{longProp1}  ,			</if>
+					<if test="longProp2 !=null">
+				LONG_PROP_2 = #{longProp2}  ,			</if>
+					<if test="decProp1 !=null">
+				DEC_PROP_1 = #{decProp1}  ,			</if>
+					<if test="decProp2 !=null">
+				DEC_PROP_2 = #{decProp2}  ,			</if>
+					<if test="boolProp1 !=null">
+				BOOL_PROP_1 = #{boolProp1}  ,			</if>
+					<if test="boolProp2 !=null">
+				BOOL_PROP_2 = #{boolProp2}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzSimpropTriggers">
+		DELETE FROM QRTZ_SIMPROP_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_simprop_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

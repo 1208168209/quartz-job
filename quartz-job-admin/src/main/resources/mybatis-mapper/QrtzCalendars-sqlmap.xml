@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzCalendarsMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzCalendars" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="calendarName" javaType="String" property="calendarName" />
+												<result column="calendar" javaType="Object" property="calendar" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_CALENDARS_COLUMN">
+					qc.SCHED_NAME schedName,					qc.CALENDAR_NAME calendarName,					qc.CALENDAR calendar			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_CALENDARS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qc.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="calendarName !=null and calendarName.length()!=0 ">
+								AND qc.CALENDAR_NAME=#{calendarName}
+				</if>
+			        				<if test="calendar !=null ">
+								AND qc.CALENDAR=#{calendar}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzCalendars" resultType="QrtzCalendars">
+		select <include  refid="SQL_QRTZ_CALENDARS_COLUMN"/>
+		from QRTZ_CALENDARS qc
+		<where>
+			<include  refid="SQL_QRTZ_CALENDARS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qc.SCHED_NAME desc
+							qc.CALENDAR_NAME desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzCalendars" resultType="int">
+		select count(*) as counts
+		from QRTZ_CALENDARS qc
+		<where>
+			<include  refid="SQL_QRTZ_CALENDARS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzCalendars">
+		select <include  refid="SQL_QRTZ_CALENDARS_COLUMN"/>
+		from QRTZ_CALENDARS qc
+		<where>
+							qc.SCHED_NAME = #{idValue}
+							qc.CALENDAR_NAME = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzCalendars" >
+			insert into QRTZ_CALENDARS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="calendarName != null">
+        		CALENDAR_NAME,
+      		</if>
+      		 					<if test="calendar != null">
+        		CALENDAR,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="calendarName != null">
+				#{calendarName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="calendar != null">
+				#{calendar,jdbcType=}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzCalendars">
+		UPDATE QRTZ_CALENDARS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="calendarName !=null">
+				CALENDAR_NAME = #{calendarName}  ,			</if>
+					<if test="calendar !=null">
+				CALENDAR = #{calendar}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					CALENDAR_NAME=#{calendarName} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzCalendars">
+		DELETE FROM QRTZ_CALENDARS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					CALENDAR_NAME=#{calendarName} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_calendars
+		WHERE
+					SCHED_NAME=#{schedName}  and 					CALENDAR_NAME=#{calendarName} 			</delete>
+
+</mapper>

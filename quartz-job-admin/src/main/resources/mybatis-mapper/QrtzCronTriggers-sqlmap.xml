@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzCronTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzCronTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="cronExpression" javaType="String" property="cronExpression" />
+												<result column="timeZoneId" javaType="String" property="timeZoneId" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_CRON_TRIGGERS_COLUMN">
+					qct.SCHED_NAME schedName,					qct.TRIGGER_NAME triggerName,					qct.TRIGGER_GROUP triggerGroup,					qct.CRON_EXPRESSION cronExpression,					qct.TIME_ZONE_ID timeZoneId			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_CRON_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qct.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qct.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qct.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="cronExpression !=null and cronExpression.length()!=0 ">
+								AND qct.CRON_EXPRESSION=#{cronExpression}
+				</if>
+			        				<if test="timeZoneId !=null and timeZoneId.length()!=0 ">
+								AND qct.TIME_ZONE_ID=#{timeZoneId}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzCronTriggers" resultType="QrtzCronTriggers">
+		select <include  refid="SQL_QRTZ_CRON_TRIGGERS_COLUMN"/>
+		from QRTZ_CRON_TRIGGERS qct
+		<where>
+			<include  refid="SQL_QRTZ_CRON_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qct.SCHED_NAME desc
+							qct.TRIGGER_NAME desc
+							qct.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzCronTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_CRON_TRIGGERS qct
+		<where>
+			<include  refid="SQL_QRTZ_CRON_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzCronTriggers">
+		select <include  refid="SQL_QRTZ_CRON_TRIGGERS_COLUMN"/>
+		from QRTZ_CRON_TRIGGERS qct
+		<where>
+							qct.SCHED_NAME = #{idValue}
+							qct.TRIGGER_NAME = #{idValue}
+							qct.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzCronTriggers" >
+			insert into QRTZ_CRON_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="cronExpression != null">
+        		CRON_EXPRESSION,
+      		</if>
+      		 					<if test="timeZoneId != null">
+        		TIME_ZONE_ID,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="cronExpression != null">
+				#{cronExpression,jdbcType=VARCHAR}, 
+			</if>
+								<if test="timeZoneId != null">
+				#{timeZoneId,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzCronTriggers">
+		UPDATE QRTZ_CRON_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="cronExpression !=null">
+				CRON_EXPRESSION = #{cronExpression}  ,			</if>
+					<if test="timeZoneId !=null">
+				TIME_ZONE_ID = #{timeZoneId}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzCronTriggers">
+		DELETE FROM QRTZ_CRON_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_cron_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

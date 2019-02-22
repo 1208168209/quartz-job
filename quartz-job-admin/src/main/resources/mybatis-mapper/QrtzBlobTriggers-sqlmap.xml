@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzBlobTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzBlobTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="blobData" javaType="Object" property="blobData" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_BLOB_TRIGGERS_COLUMN">
+					qbt.SCHED_NAME schedName,					qbt.TRIGGER_NAME triggerName,					qbt.TRIGGER_GROUP triggerGroup,					qbt.BLOB_DATA blobData			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_BLOB_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qbt.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qbt.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qbt.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="blobData !=null ">
+								AND qbt.BLOB_DATA=#{blobData}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzBlobTriggers" resultType="QrtzBlobTriggers">
+		select <include  refid="SQL_QRTZ_BLOB_TRIGGERS_COLUMN"/>
+		from QRTZ_BLOB_TRIGGERS qbt
+		<where>
+			<include  refid="SQL_QRTZ_BLOB_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qbt.SCHED_NAME desc
+							qbt.TRIGGER_NAME desc
+							qbt.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzBlobTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_BLOB_TRIGGERS qbt
+		<where>
+			<include  refid="SQL_QRTZ_BLOB_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzBlobTriggers">
+		select <include  refid="SQL_QRTZ_BLOB_TRIGGERS_COLUMN"/>
+		from QRTZ_BLOB_TRIGGERS qbt
+		<where>
+							qbt.SCHED_NAME = #{idValue}
+							qbt.TRIGGER_NAME = #{idValue}
+							qbt.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzBlobTriggers" >
+			insert into QRTZ_BLOB_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="blobData != null">
+        		BLOB_DATA,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="blobData != null">
+				#{blobData,jdbcType=}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzBlobTriggers">
+		UPDATE QRTZ_BLOB_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="blobData !=null">
+				BLOB_DATA = #{blobData}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzBlobTriggers">
+		DELETE FROM QRTZ_BLOB_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_blob_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

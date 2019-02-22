@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzFiredTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzFiredTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="entryId" javaType="String" property="entryId" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="instanceName" javaType="String" property="instanceName" />
+												<result column="firedTime" javaType="String" property="firedTime" />
+												<result column="schedTime" javaType="String" property="schedTime" />
+												<result column="priority" javaType="Integer" property="priority" />
+												<result column="state" javaType="String" property="state" />
+												<result column="jobName" javaType="String" property="jobName" />
+												<result column="jobGroup" javaType="String" property="jobGroup" />
+												<result column="isNonconcurrent" javaType="String" property="isNonconcurrent" />
+												<result column="requestsRecovery" javaType="String" property="requestsRecovery" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_FIRED_TRIGGERS_COLUMN">
+					qft.SCHED_NAME schedName,					qft.ENTRY_ID entryId,					qft.TRIGGER_NAME triggerName,					qft.TRIGGER_GROUP triggerGroup,					qft.INSTANCE_NAME instanceName,					qft.FIRED_TIME firedTime,					qft.SCHED_TIME schedTime,					qft.PRIORITY priority,					qft.STATE state,					qft.JOB_NAME jobName,					qft.JOB_GROUP jobGroup,					qft.IS_NONCONCURRENT isNonconcurrent,					qft.REQUESTS_RECOVERY requestsRecovery			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_FIRED_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qft.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="entryId !=null and entryId.length()!=0 ">
+								AND qft.ENTRY_ID=#{entryId}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qft.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qft.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="instanceName !=null and instanceName.length()!=0 ">
+								AND qft.INSTANCE_NAME=#{instanceName}
+				</if>
+			        				<if test="firedTime !=null and firedTime.length()!=0 ">
+								AND qft.FIRED_TIME=#{firedTime}
+				</if>
+			        				<if test="schedTime !=null and schedTime.length()!=0 ">
+								AND qft.SCHED_TIME=#{schedTime}
+				</if>
+			        				<if test="priority !=null ">
+								AND qft.PRIORITY=#{priority}
+				</if>
+			        				<if test="state !=null and state.length()!=0 ">
+								AND qft.STATE=#{state}
+				</if>
+			        				<if test="jobName !=null and jobName.length()!=0 ">
+								AND qft.JOB_NAME=#{jobName}
+				</if>
+			        				<if test="jobGroup !=null and jobGroup.length()!=0 ">
+								AND qft.JOB_GROUP=#{jobGroup}
+				</if>
+			        				<if test="isNonconcurrent !=null and isNonconcurrent.length()!=0 ">
+								AND qft.IS_NONCONCURRENT=#{isNonconcurrent}
+				</if>
+			        				<if test="requestsRecovery !=null and requestsRecovery.length()!=0 ">
+								AND qft.REQUESTS_RECOVERY=#{requestsRecovery}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzFiredTriggers" resultType="QrtzFiredTriggers">
+		select <include  refid="SQL_QRTZ_FIRED_TRIGGERS_COLUMN"/>
+		from QRTZ_FIRED_TRIGGERS qft
+		<where>
+			<include  refid="SQL_QRTZ_FIRED_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qft.SCHED_NAME desc
+							qft.ENTRY_ID desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzFiredTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_FIRED_TRIGGERS qft
+		<where>
+			<include  refid="SQL_QRTZ_FIRED_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzFiredTriggers">
+		select <include  refid="SQL_QRTZ_FIRED_TRIGGERS_COLUMN"/>
+		from QRTZ_FIRED_TRIGGERS qft
+		<where>
+							qft.SCHED_NAME = #{idValue}
+							qft.ENTRY_ID = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzFiredTriggers" >
+			insert into QRTZ_FIRED_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="entryId != null">
+        		ENTRY_ID,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="instanceName != null">
+        		INSTANCE_NAME,
+      		</if>
+      		 					<if test="firedTime != null">
+        		FIRED_TIME,
+      		</if>
+      		 					<if test="schedTime != null">
+        		SCHED_TIME,
+      		</if>
+      		 					<if test="priority != null">
+        		PRIORITY,
+      		</if>
+      		 					<if test="state != null">
+        		STATE,
+      		</if>
+      		 					<if test="jobName != null">
+        		JOB_NAME,
+      		</if>
+      		 					<if test="jobGroup != null">
+        		JOB_GROUP,
+      		</if>
+      		 					<if test="isNonconcurrent != null">
+        		IS_NONCONCURRENT,
+      		</if>
+      		 					<if test="requestsRecovery != null">
+        		REQUESTS_RECOVERY,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="entryId != null">
+				#{entryId,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="instanceName != null">
+				#{instanceName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="firedTime != null">
+				#{firedTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="schedTime != null">
+				#{schedTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="priority != null">
+				#{priority,jdbcType=NUMERIC}, 
+			</if>
+								<if test="state != null">
+				#{state,jdbcType=VARCHAR}, 
+			</if>
+								<if test="jobName != null">
+				#{jobName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="jobGroup != null">
+				#{jobGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="isNonconcurrent != null">
+				#{isNonconcurrent,jdbcType=VARCHAR}, 
+			</if>
+								<if test="requestsRecovery != null">
+				#{requestsRecovery,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzFiredTriggers">
+		UPDATE QRTZ_FIRED_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="entryId !=null">
+				ENTRY_ID = #{entryId}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="instanceName !=null">
+				INSTANCE_NAME = #{instanceName}  ,			</if>
+					<if test="firedTime !=null">
+				FIRED_TIME = #{firedTime}  ,			</if>
+					<if test="schedTime !=null">
+				SCHED_TIME = #{schedTime}  ,			</if>
+					<if test="priority !=null">
+				PRIORITY = #{priority}  ,			</if>
+					<if test="state !=null">
+				STATE = #{state}  ,			</if>
+					<if test="jobName !=null">
+				JOB_NAME = #{jobName}  ,			</if>
+					<if test="jobGroup !=null">
+				JOB_GROUP = #{jobGroup}  ,			</if>
+					<if test="isNonconcurrent !=null">
+				IS_NONCONCURRENT = #{isNonconcurrent}  ,			</if>
+					<if test="requestsRecovery !=null">
+				REQUESTS_RECOVERY = #{requestsRecovery}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					ENTRY_ID=#{entryId} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzFiredTriggers">
+		DELETE FROM QRTZ_FIRED_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					ENTRY_ID=#{entryId} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_fired_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					ENTRY_ID=#{entryId} 			</delete>
+
+</mapper>

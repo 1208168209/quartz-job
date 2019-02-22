@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzPausedTriggerGrpsMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzPausedTriggerGrps" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_PAUSED_TRIGGER_GRPS_COLUMN">
+					qptg.SCHED_NAME schedName,					qptg.TRIGGER_GROUP triggerGroup			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_PAUSED_TRIGGER_GRPS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qptg.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qptg.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzPausedTriggerGrps" resultType="QrtzPausedTriggerGrps">
+		select <include  refid="SQL_QRTZ_PAUSED_TRIGGER_GRPS_COLUMN"/>
+		from QRTZ_PAUSED_TRIGGER_GRPS qptg
+		<where>
+			<include  refid="SQL_QRTZ_PAUSED_TRIGGER_GRPS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qptg.SCHED_NAME desc
+							qptg.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzPausedTriggerGrps" resultType="int">
+		select count(*) as counts
+		from QRTZ_PAUSED_TRIGGER_GRPS qptg
+		<where>
+			<include  refid="SQL_QRTZ_PAUSED_TRIGGER_GRPS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzPausedTriggerGrps">
+		select <include  refid="SQL_QRTZ_PAUSED_TRIGGER_GRPS_COLUMN"/>
+		from QRTZ_PAUSED_TRIGGER_GRPS qptg
+		<where>
+							qptg.SCHED_NAME = #{idValue}
+							qptg.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzPausedTriggerGrps" >
+			insert into QRTZ_PAUSED_TRIGGER_GRPS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzPausedTriggerGrps">
+		UPDATE QRTZ_PAUSED_TRIGGER_GRPS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzPausedTriggerGrps">
+		DELETE FROM QRTZ_PAUSED_TRIGGER_GRPS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_paused_trigger_grps
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

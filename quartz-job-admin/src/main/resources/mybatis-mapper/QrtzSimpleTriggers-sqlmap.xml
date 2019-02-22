@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzSimpleTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzSimpleTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="repeatCount" javaType="String" property="repeatCount" />
+												<result column="repeatInterval" javaType="String" property="repeatInterval" />
+												<result column="timesTriggered" javaType="String" property="timesTriggered" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_SIMPLE_TRIGGERS_COLUMN">
+					qst.SCHED_NAME schedName,					qst.TRIGGER_NAME triggerName,					qst.TRIGGER_GROUP triggerGroup,					qst.REPEAT_COUNT repeatCount,					qst.REPEAT_INTERVAL repeatInterval,					qst.TIMES_TRIGGERED timesTriggered			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_SIMPLE_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qst.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qst.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qst.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="repeatCount !=null and repeatCount.length()!=0 ">
+								AND qst.REPEAT_COUNT=#{repeatCount}
+				</if>
+			        				<if test="repeatInterval !=null and repeatInterval.length()!=0 ">
+								AND qst.REPEAT_INTERVAL=#{repeatInterval}
+				</if>
+			        				<if test="timesTriggered !=null and timesTriggered.length()!=0 ">
+								AND qst.TIMES_TRIGGERED=#{timesTriggered}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzSimpleTriggers" resultType="QrtzSimpleTriggers">
+		select <include  refid="SQL_QRTZ_SIMPLE_TRIGGERS_COLUMN"/>
+		from QRTZ_SIMPLE_TRIGGERS qst
+		<where>
+			<include  refid="SQL_QRTZ_SIMPLE_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qst.SCHED_NAME desc
+							qst.TRIGGER_NAME desc
+							qst.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzSimpleTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_SIMPLE_TRIGGERS qst
+		<where>
+			<include  refid="SQL_QRTZ_SIMPLE_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzSimpleTriggers">
+		select <include  refid="SQL_QRTZ_SIMPLE_TRIGGERS_COLUMN"/>
+		from QRTZ_SIMPLE_TRIGGERS qst
+		<where>
+							qst.SCHED_NAME = #{idValue}
+							qst.TRIGGER_NAME = #{idValue}
+							qst.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzSimpleTriggers" >
+			insert into QRTZ_SIMPLE_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="repeatCount != null">
+        		REPEAT_COUNT,
+      		</if>
+      		 					<if test="repeatInterval != null">
+        		REPEAT_INTERVAL,
+      		</if>
+      		 					<if test="timesTriggered != null">
+        		TIMES_TRIGGERED,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="repeatCount != null">
+				#{repeatCount,jdbcType=VARCHAR}, 
+			</if>
+								<if test="repeatInterval != null">
+				#{repeatInterval,jdbcType=VARCHAR}, 
+			</if>
+								<if test="timesTriggered != null">
+				#{timesTriggered,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzSimpleTriggers">
+		UPDATE QRTZ_SIMPLE_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="repeatCount !=null">
+				REPEAT_COUNT = #{repeatCount}  ,			</if>
+					<if test="repeatInterval !=null">
+				REPEAT_INTERVAL = #{repeatInterval}  ,			</if>
+					<if test="timesTriggered !=null">
+				TIMES_TRIGGERED = #{timesTriggered}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzSimpleTriggers">
+		DELETE FROM QRTZ_SIMPLE_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_simple_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

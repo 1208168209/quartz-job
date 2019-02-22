@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzTriggersMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzTriggers" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="triggerName" javaType="String" property="triggerName" />
+												<result column="triggerGroup" javaType="String" property="triggerGroup" />
+												<result column="jobName" javaType="String" property="jobName" />
+												<result column="jobGroup" javaType="String" property="jobGroup" />
+												<result column="description" javaType="String" property="description" />
+												<result column="nextFireTime" javaType="String" property="nextFireTime" />
+												<result column="prevFireTime" javaType="String" property="prevFireTime" />
+												<result column="priority" javaType="Integer" property="priority" />
+												<result column="triggerState" javaType="String" property="triggerState" />
+												<result column="triggerType" javaType="String" property="triggerType" />
+												<result column="startTime" javaType="String" property="startTime" />
+												<result column="endTime" javaType="String" property="endTime" />
+												<result column="calendarName" javaType="String" property="calendarName" />
+												<result column="misfireInstr" javaType="String" property="misfireInstr" />
+												<result column="jobData" javaType="Object" property="jobData" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_TRIGGERS_COLUMN">
+					qt.SCHED_NAME schedName,					qt.TRIGGER_NAME triggerName,					qt.TRIGGER_GROUP triggerGroup,					qt.JOB_NAME jobName,					qt.JOB_GROUP jobGroup,					qt.DESCRIPTION description,					qt.NEXT_FIRE_TIME nextFireTime,					qt.PREV_FIRE_TIME prevFireTime,					qt.PRIORITY priority,					qt.TRIGGER_STATE triggerState,					qt.TRIGGER_TYPE triggerType,					qt.START_TIME startTime,					qt.END_TIME endTime,					qt.CALENDAR_NAME calendarName,					qt.MISFIRE_INSTR misfireInstr,					qt.JOB_DATA jobData			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_TRIGGERS_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qt.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="triggerName !=null and triggerName.length()!=0 ">
+								AND qt.TRIGGER_NAME=#{triggerName}
+				</if>
+			        				<if test="triggerGroup !=null and triggerGroup.length()!=0 ">
+								AND qt.TRIGGER_GROUP=#{triggerGroup}
+				</if>
+			        				<if test="jobName !=null and jobName.length()!=0 ">
+								AND qt.JOB_NAME=#{jobName}
+				</if>
+			        				<if test="jobGroup !=null and jobGroup.length()!=0 ">
+								AND qt.JOB_GROUP=#{jobGroup}
+				</if>
+			        				<if test="description !=null and description.length()!=0 ">
+								AND qt.DESCRIPTION=#{description}
+				</if>
+			        				<if test="nextFireTime !=null and nextFireTime.length()!=0 ">
+								AND qt.NEXT_FIRE_TIME=#{nextFireTime}
+				</if>
+			        				<if test="prevFireTime !=null and prevFireTime.length()!=0 ">
+								AND qt.PREV_FIRE_TIME=#{prevFireTime}
+				</if>
+			        				<if test="priority !=null ">
+								AND qt.PRIORITY=#{priority}
+				</if>
+			        				<if test="triggerState !=null and triggerState.length()!=0 ">
+								AND qt.TRIGGER_STATE=#{triggerState}
+				</if>
+			        				<if test="triggerType !=null and triggerType.length()!=0 ">
+								AND qt.TRIGGER_TYPE=#{triggerType}
+				</if>
+			        				<if test="startTime !=null and startTime.length()!=0 ">
+								AND qt.START_TIME=#{startTime}
+				</if>
+			        				<if test="endTime !=null and endTime.length()!=0 ">
+								AND qt.END_TIME=#{endTime}
+				</if>
+			        				<if test="calendarName !=null and calendarName.length()!=0 ">
+								AND qt.CALENDAR_NAME=#{calendarName}
+				</if>
+			        				<if test="misfireInstr !=null and misfireInstr.length()!=0 ">
+								AND qt.MISFIRE_INSTR=#{misfireInstr}
+				</if>
+			        				<if test="jobData !=null ">
+								AND qt.JOB_DATA=#{jobData}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzTriggers" resultType="QrtzTriggers">
+		select <include  refid="SQL_QRTZ_TRIGGERS_COLUMN"/>
+		from QRTZ_TRIGGERS qt
+		<where>
+			<include  refid="SQL_QRTZ_TRIGGERS_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qt.SCHED_NAME desc
+							qt.TRIGGER_NAME desc
+							qt.TRIGGER_GROUP desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzTriggers" resultType="int">
+		select count(*) as counts
+		from QRTZ_TRIGGERS qt
+		<where>
+			<include  refid="SQL_QRTZ_TRIGGERS_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzTriggers">
+		select <include  refid="SQL_QRTZ_TRIGGERS_COLUMN"/>
+		from QRTZ_TRIGGERS qt
+		<where>
+							qt.SCHED_NAME = #{idValue}
+							qt.TRIGGER_NAME = #{idValue}
+							qt.TRIGGER_GROUP = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzTriggers" >
+			insert into QRTZ_TRIGGERS 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="triggerName != null">
+        		TRIGGER_NAME,
+      		</if>
+      		 					<if test="triggerGroup != null">
+        		TRIGGER_GROUP,
+      		</if>
+      		 					<if test="jobName != null">
+        		JOB_NAME,
+      		</if>
+      		 					<if test="jobGroup != null">
+        		JOB_GROUP,
+      		</if>
+      		 					<if test="description != null">
+        		DESCRIPTION,
+      		</if>
+      		 					<if test="nextFireTime != null">
+        		NEXT_FIRE_TIME,
+      		</if>
+      		 					<if test="prevFireTime != null">
+        		PREV_FIRE_TIME,
+      		</if>
+      		 					<if test="priority != null">
+        		PRIORITY,
+      		</if>
+      		 					<if test="triggerState != null">
+        		TRIGGER_STATE,
+      		</if>
+      		 					<if test="triggerType != null">
+        		TRIGGER_TYPE,
+      		</if>
+      		 					<if test="startTime != null">
+        		START_TIME,
+      		</if>
+      		 					<if test="endTime != null">
+        		END_TIME,
+      		</if>
+      		 					<if test="calendarName != null">
+        		CALENDAR_NAME,
+      		</if>
+      		 					<if test="misfireInstr != null">
+        		MISFIRE_INSTR,
+      		</if>
+      		 					<if test="jobData != null">
+        		JOB_DATA,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerName != null">
+				#{triggerName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerGroup != null">
+				#{triggerGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="jobName != null">
+				#{jobName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="jobGroup != null">
+				#{jobGroup,jdbcType=VARCHAR}, 
+			</if>
+								<if test="description != null">
+				#{description,jdbcType=VARCHAR}, 
+			</if>
+								<if test="nextFireTime != null">
+				#{nextFireTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="prevFireTime != null">
+				#{prevFireTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="priority != null">
+				#{priority,jdbcType=NUMERIC}, 
+			</if>
+								<if test="triggerState != null">
+				#{triggerState,jdbcType=VARCHAR}, 
+			</if>
+								<if test="triggerType != null">
+				#{triggerType,jdbcType=VARCHAR}, 
+			</if>
+								<if test="startTime != null">
+				#{startTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="endTime != null">
+				#{endTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="calendarName != null">
+				#{calendarName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="misfireInstr != null">
+				#{misfireInstr,jdbcType=VARCHAR}, 
+			</if>
+								<if test="jobData != null">
+				#{jobData,jdbcType=}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzTriggers">
+		UPDATE QRTZ_TRIGGERS
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="triggerName !=null">
+				TRIGGER_NAME = #{triggerName}  ,			</if>
+					<if test="triggerGroup !=null">
+				TRIGGER_GROUP = #{triggerGroup}  ,			</if>
+					<if test="jobName !=null">
+				JOB_NAME = #{jobName}  ,			</if>
+					<if test="jobGroup !=null">
+				JOB_GROUP = #{jobGroup}  ,			</if>
+					<if test="description !=null">
+				DESCRIPTION = #{description}  ,			</if>
+					<if test="nextFireTime !=null">
+				NEXT_FIRE_TIME = #{nextFireTime}  ,			</if>
+					<if test="prevFireTime !=null">
+				PREV_FIRE_TIME = #{prevFireTime}  ,			</if>
+					<if test="priority !=null">
+				PRIORITY = #{priority}  ,			</if>
+					<if test="triggerState !=null">
+				TRIGGER_STATE = #{triggerState}  ,			</if>
+					<if test="triggerType !=null">
+				TRIGGER_TYPE = #{triggerType}  ,			</if>
+					<if test="startTime !=null">
+				START_TIME = #{startTime}  ,			</if>
+					<if test="endTime !=null">
+				END_TIME = #{endTime}  ,			</if>
+					<if test="calendarName !=null">
+				CALENDAR_NAME = #{calendarName}  ,			</if>
+					<if test="misfireInstr !=null">
+				MISFIRE_INSTR = #{misfireInstr}  ,			</if>
+					<if test="jobData !=null">
+				JOB_DATA = #{jobData}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzTriggers">
+		DELETE FROM QRTZ_TRIGGERS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_triggers
+		WHERE
+					SCHED_NAME=#{schedName}  and 					TRIGGER_NAME=#{triggerName}  and 					TRIGGER_GROUP=#{triggerGroup} 			</delete>
+
+</mapper>

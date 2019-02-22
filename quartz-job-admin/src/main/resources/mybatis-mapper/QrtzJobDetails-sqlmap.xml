@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.quartz.mapper.QrtzJobDetailsMapper">
+
+    <!-- The corresponding field and type -->
+    <resultMap type="QrtzJobDetails" id="ResultMap">
+        <result column="schedName" javaType="String" property="schedName"/>
+        <result column="jobName" javaType="String" property="jobName"/>
+        <result column="jobGroup" javaType="String" property="jobGroup"/>
+        <result column="description" javaType="String" property="description"/>
+        <result column="jobClassName" javaType="String" property="jobClassName"/>
+        <result column="isDurable" javaType="String" property="isDurable"/>
+        <result column="isNonconcurrent" javaType="String" property="isNonconcurrent"/>
+        <result column="isUpdateData" javaType="String" property="isUpdateData"/>
+        <result column="requestsRecovery" javaType="String" property="requestsRecovery"/>
+        <result column="jobData" javaType="Object" property="jobData"/>
+    </resultMap>
+
+    <!-- Each field corresponding alias, convenient call -->
+    <sql id="SQL_QRTZ_JOB_DETAILS_COLUMN">
+        qjd.SCHED_NAME schedName,
+        qjd.JOB_NAME jobName,
+        qjd.JOB_GROUP jobGroup,
+        qjd.DESCRIPTION description,
+        qjd.JOB_CLASS_NAME jobClassName,
+        qjd.IS_DURABLE isDurable,
+        qjd.IS_NONCONCURRENT isNonconcurrent,
+        qjd.IS_UPDATE_DATA isUpdateData,
+        qjd.REQUESTS_RECOVERY requestsRecovery,
+        qjd.JOB_DATA jobData
+    </sql>
+
+    <!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_JOB_DETAILS_WHERE">
+        <if test="schedName !=null and schedName.length()!=0 ">
+            AND qjd.SCHED_NAME=#{schedName}
+        </if>
+        <if test="jobName !=null and jobName.length()!=0 ">
+            AND qjd.JOB_NAME=#{jobName}
+        </if>
+        <if test="jobGroup !=null and jobGroup.length()!=0 ">
+            AND qjd.JOB_GROUP=#{jobGroup}
+        </if>
+        <if test="description !=null and description.length()!=0 ">
+            AND qjd.DESCRIPTION=#{description}
+        </if>
+        <if test="jobClassName !=null and jobClassName.length()!=0 ">
+            AND qjd.JOB_CLASS_NAME=#{jobClassName}
+        </if>
+        <if test="isDurable !=null and isDurable.length()!=0 ">
+            AND qjd.IS_DURABLE=#{isDurable}
+        </if>
+        <if test="isNonconcurrent !=null and isNonconcurrent.length()!=0 ">
+            AND qjd.IS_NONCONCURRENT=#{isNonconcurrent}
+        </if>
+        <if test="isUpdateData !=null and isUpdateData.length()!=0 ">
+            AND qjd.IS_UPDATE_DATA=#{isUpdateData}
+        </if>
+        <if test="requestsRecovery !=null and requestsRecovery.length()!=0 ">
+            AND qjd.REQUESTS_RECOVERY=#{requestsRecovery}
+        </if>
+        <if test="jobData !=null ">
+            AND qjd.JOB_DATA=#{jobData}
+        </if>
+    </sql>
+
+    <select id="getJobAndTriggerList" resultType="JobAndTrigger" parameterType="JobAndTrigger">
+        SELECT
+        qrtz_job_details.JOB_NAME jobName,
+        qrtz_job_details.JOB_GROUP jobGroup,
+        qrtz_job_details.JOB_CLASS_NAME jobClassName,
+        qrtz_job_details.DESCRIPTION ,
+        qrtz_triggers.TRIGGER_NAME triggerName,
+        qrtz_triggers.TRIGGER_GROUP triggerGroup,
+        qrtz_triggers.TRIGGER_STATE triggerState,
+        qrtz_triggers.PREV_FIRE_TIME prevFireTime,
+        qrtz_triggers.NEXT_FIRE_TIME nextFireTime,
+        qrtz_triggers.START_TIME startTime,
+        qrtz_cron_triggers.CRON_EXPRESSION cronExpression,
+        qrtz_cron_triggers.TIME_ZONE_ID timeZoneId
+        FROM
+        qrtz_job_details
+        JOIN qrtz_triggers
+        JOIN qrtz_cron_triggers ON qrtz_job_details.JOB_NAME = qrtz_triggers.JOB_NAME
+        AND qrtz_triggers.TRIGGER_NAME = qrtz_cron_triggers.TRIGGER_NAME
+        AND qrtz_triggers.TRIGGER_GROUP = qrtz_cron_triggers.TRIGGER_GROUP
+        <where>
+            <if test="jobName !=null and jobName.length()!=0 ">
+                AND qrtz_job_details.JOB_NAME=#{jobName}
+            </if>
+            <if test="jobGroup !=null and jobGroup.length()!=0 ">
+                AND qrtz_job_details.JOB_GROUP=#{jobGroup}
+            </if>
+            <if test="jobNameQuery !=null and jobNameQuery.length()!=0 ">
+                AND qrtz_job_details.JOB_NAME LIKE CONCAT ('%',#{jobNameQuery},'%')
+            </if>
+            <if test="jobGroupQuery !=null and jobGroupQuery.length()!=0 ">
+                AND qrtz_job_details.JOB_GROUP LIKE CONCAT ('%',#{jobGroupQuery},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getJobAndTriggerListCount" parameterType="JobAndTrigger" resultType="int">
+        select count(*) as counts
+        FROM
+        qrtz_job_details
+        JOIN qrtz_triggers
+        JOIN qrtz_cron_triggers ON qrtz_job_details.JOB_NAME = qrtz_triggers.JOB_NAME
+        AND qrtz_triggers.TRIGGER_NAME = qrtz_cron_triggers.TRIGGER_NAME
+        AND qrtz_triggers.TRIGGER_GROUP = qrtz_cron_triggers.TRIGGER_GROUP
+    </select>
+
+    <!--&lt;!&ndash; Query All  &ndash;&gt;-->
+    <select id="getList" parameterType="QrtzJobDetails" resultType="QrtzJobDetails">
+        select
+        <include refid="SQL_QRTZ_JOB_DETAILS_COLUMN"/>
+        from QRTZ_JOB_DETAILS qjd
+        <where>
+            <include refid="SQL_QRTZ_JOB_DETAILS_WHERE"/>
+        </where>
+        <if test="orderStr != null and orderStr.length() != 0">
+            ORDER BY ${orderStr}
+        </if>
+        <if test="orderStr == null or orderStr.length() == 0">
+            ORDER BY
+            qjd.SCHED_NAME desc
+            qjd.JOB_NAME desc
+            qjd.JOB_GROUP desc
+        </if>
+    </select>
+
+    <!-- Statistical line   -->
+    <select id="getListCount" parameterType="QrtzJobDetails" resultType="int">
+        select count(*) as counts
+        from QRTZ_JOB_DETAILS qjd
+        <where>
+            <include refid="SQL_QRTZ_JOB_DETAILS_WHERE"/>
+        </where>
+    </select>
+
+    <!-- According to the id check record  -->
+    <select id="getById" parameterType="int" resultType="QrtzJobDetails">
+        select
+        <include refid="SQL_QRTZ_JOB_DETAILS_COLUMN"/>
+        from QRTZ_JOB_DETAILS qjd
+        <where>
+            qjd.SCHED_NAME = #{idValue}
+            qjd.JOB_NAME = #{idValue}
+            qjd.JOB_GROUP = #{idValue}
+        </where>
+    </select>
+
+    <!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+    <!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId"
+            order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+    <!-- FOR MYSQL KEY DEMO
+    <selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+            select LAST_INSERT_ID()
+    </selectKey>-->
+    <insert id="insert" parameterType="QrtzJobDetails">
+        insert into QRTZ_JOB_DETAILS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schedName != null">
+                SCHED_NAME,
+            </if>
+            <if test="jobName != null">
+                JOB_NAME,
+            </if>
+            <if test="jobGroup != null">
+                JOB_GROUP,
+            </if>
+            <if test="description != null">
+                DESCRIPTION,
+            </if>
+            <if test="jobClassName != null">
+                JOB_CLASS_NAME,
+            </if>
+            <if test="isDurable != null">
+                IS_DURABLE,
+            </if>
+            <if test="isNonconcurrent != null">
+                IS_NONCONCURRENT,
+            </if>
+            <if test="isUpdateData != null">
+                IS_UPDATE_DATA,
+            </if>
+            <if test="requestsRecovery != null">
+                REQUESTS_RECOVERY,
+            </if>
+            <if test="jobData != null">
+                JOB_DATA,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schedName != null">
+                #{schedName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobName != null">
+                #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="jobGroup != null">
+                #{jobGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="jobClassName != null">
+                #{jobClassName,jdbcType=VARCHAR},
+            </if>
+            <if test="isDurable != null">
+                #{isDurable,jdbcType=VARCHAR},
+            </if>
+            <if test="isNonconcurrent != null">
+                #{isNonconcurrent,jdbcType=VARCHAR},
+            </if>
+            <if test="isUpdateData != null">
+                #{isUpdateData,jdbcType=VARCHAR},
+            </if>
+            <if test="requestsRecovery != null">
+                #{requestsRecovery,jdbcType=VARCHAR},
+            </if>
+            <if test="jobData != null">
+                #{jobData,jdbcType=},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- update  -->
+    <update id="update" parameterType="QrtzJobDetails">
+        UPDATE QRTZ_JOB_DETAILS
+        <set>
+            <if test="schedName !=null">
+                SCHED_NAME = #{schedName} ,
+            </if>
+            <if test="jobName !=null">
+                JOB_NAME = #{jobName} ,
+            </if>
+            <if test="jobGroup !=null">
+                JOB_GROUP = #{jobGroup} ,
+            </if>
+            <if test="description !=null">
+                DESCRIPTION = #{description} ,
+            </if>
+            <if test="jobClassName !=null">
+                JOB_CLASS_NAME = #{jobClassName} ,
+            </if>
+            <if test="isDurable !=null">
+                IS_DURABLE = #{isDurable} ,
+            </if>
+            <if test="isNonconcurrent !=null">
+                IS_NONCONCURRENT = #{isNonconcurrent} ,
+            </if>
+            <if test="isUpdateData !=null">
+                IS_UPDATE_DATA = #{isUpdateData} ,
+            </if>
+            <if test="requestsRecovery !=null">
+                REQUESTS_RECOVERY = #{requestsRecovery} ,
+            </if>
+            <if test="jobData !=null">
+                JOB_DATA = #{jobData}
+            </if>
+        </set>
+        WHERE
+        SCHED_NAME=#{schedName} and JOB_NAME=#{jobName} and JOB_GROUP=#{jobGroup}
+    </update>
+
+    <!-- delete  -->
+    <delete id="delete" parameterType="QrtzJobDetails">
+		DELETE FROM QRTZ_JOB_DETAILS
+		WHERE
+					SCHED_NAME=#{schedName}  and 					JOB_NAME=#{jobName}  and 					JOB_GROUP=#{jobGroup} 			</delete>
+
+    <!-- delete(ids)  -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_job_details
+		WHERE
+					SCHED_NAME=#{schedName}  and 					JOB_NAME=#{jobName}  and 					JOB_GROUP=#{jobGroup} 			</delete>
+
+</mapper>

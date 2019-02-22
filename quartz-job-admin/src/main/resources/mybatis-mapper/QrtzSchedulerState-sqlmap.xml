@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<!-- sqlmapper 层 -->
+<mapper namespace="com.hongguaninfo.hgdf.adp.mapper.posm.QrtzSchedulerStateMapper">
+	
+	<!-- The corresponding field and type -->
+	<resultMap type="QrtzSchedulerState" id="ResultMap">
+									<result column="schedName" javaType="String" property="schedName" />
+												<result column="instanceName" javaType="String" property="instanceName" />
+												<result column="lastCheckinTime" javaType="String" property="lastCheckinTime" />
+												<result column="checkinInterval" javaType="String" property="checkinInterval" />
+						</resultMap>
+
+		<!-- Each field corresponding alias, convenient call -->
+	<sql id="SQL_QRTZ_SCHEDULER_STATE_COLUMN">
+					qss.SCHED_NAME schedName,					qss.INSTANCE_NAME instanceName,					qss.LAST_CHECKIN_TIME lastCheckinTime,					qss.CHECKIN_INTERVAL checkinInterval			</sql>
+
+		<!-- whether multiple fields is empty -->
+    <sql id="SQL_QRTZ_SCHEDULER_STATE_WHERE">
+   			        				<if test="schedName !=null and schedName.length()!=0 ">
+								AND qss.SCHED_NAME=#{schedName}
+				</if>
+			        				<if test="instanceName !=null and instanceName.length()!=0 ">
+								AND qss.INSTANCE_NAME=#{instanceName}
+				</if>
+			        				<if test="lastCheckinTime !=null and lastCheckinTime.length()!=0 ">
+								AND qss.LAST_CHECKIN_TIME=#{lastCheckinTime}
+				</if>
+			        				<if test="checkinInterval !=null and checkinInterval.length()!=0 ">
+								AND qss.CHECKIN_INTERVAL=#{checkinInterval}
+				</if>
+			</sql>
+
+		<!-- Query All  -->
+	<select id="getList" parameterType="QrtzSchedulerState" resultType="QrtzSchedulerState">
+		select <include  refid="SQL_QRTZ_SCHEDULER_STATE_COLUMN"/>
+		from QRTZ_SCHEDULER_STATE qss
+		<where>
+			<include  refid="SQL_QRTZ_SCHEDULER_STATE_WHERE"/>
+		</where>
+		<if test="orderStr != null and orderStr.length() != 0">
+			ORDER BY ${orderStr}
+		</if>
+		<if test="orderStr == null or orderStr.length() == 0">
+			ORDER BY
+							qss.SCHED_NAME desc
+							qss.INSTANCE_NAME desc
+					</if>
+	</select>
+
+		<!-- Statistical line   -->
+	<select id="getListCount" parameterType="QrtzSchedulerState" resultType="int">
+		select count(*) as counts
+		from QRTZ_SCHEDULER_STATE qss
+		<where>
+			<include  refid="SQL_QRTZ_SCHEDULER_STATE_WHERE"/>
+		</where>
+	</select>
+
+		<!-- According to the id check record  -->
+	<select id="getById" parameterType="int" resultType="QrtzSchedulerState">
+		select <include  refid="SQL_QRTZ_SCHEDULER_STATE_COLUMN"/>
+		from QRTZ_SCHEDULER_STATE qss
+		<where>
+							qss.SCHED_NAME = #{idValue}
+							qss.INSTANCE_NAME = #{idValue}
+					</where>
+	</select>
+
+		<!-- add é»è®¤ä½¿ç¨å¨å±ID -->
+	<!-- FOR ORACLE DEMO <selectKey resultType="java.math.BigDecimal" keyProperty="varId" 
+			order="BEFORE"> select SEQ_SYS_VARIABLE.nextVal as varId from dual </selectKey> -->
+	<!-- FOR MYSQL KEY DEMO
+	<selectKey keyProperty="varId" resultType="java.math.BigDecimal" order="AFTER">
+			select LAST_INSERT_ID()
+	</selectKey>-->
+	<insert id="insert" parameterType="QrtzSchedulerState" >
+			insert into QRTZ_SCHEDULER_STATE 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+        		SCHED_NAME,
+      		</if>
+      		 					<if test="instanceName != null">
+        		INSTANCE_NAME,
+      		</if>
+      		 					<if test="lastCheckinTime != null">
+        		LAST_CHECKIN_TIME,
+      		</if>
+      		 					<if test="checkinInterval != null">
+        		CHECKIN_INTERVAL,
+      		</if>
+      		 				</trim> 
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+					<if test="schedName != null">
+				#{schedName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="instanceName != null">
+				#{instanceName,jdbcType=VARCHAR}, 
+			</if>
+								<if test="lastCheckinTime != null">
+				#{lastCheckinTime,jdbcType=VARCHAR}, 
+			</if>
+								<if test="checkinInterval != null">
+				#{checkinInterval,jdbcType=VARCHAR}, 
+			</if>
+							</trim>
+    </insert>
+
+		<!-- update  -->
+	<update id="update" parameterType="QrtzSchedulerState">
+		UPDATE QRTZ_SCHEDULER_STATE
+		<set>
+					<if test="schedName !=null">
+				SCHED_NAME = #{schedName}  ,			</if>
+					<if test="instanceName !=null">
+				INSTANCE_NAME = #{instanceName}  ,			</if>
+					<if test="lastCheckinTime !=null">
+				LAST_CHECKIN_TIME = #{lastCheckinTime}  ,			</if>
+					<if test="checkinInterval !=null">
+				CHECKIN_INTERVAL = #{checkinInterval}  			</if>
+				</set>
+		WHERE
+					SCHED_NAME=#{schedName}  and 					INSTANCE_NAME=#{instanceName} 			</update>
+
+		<!-- delete  -->
+	<delete id="delete" parameterType="QrtzSchedulerState">
+		DELETE FROM QRTZ_SCHEDULER_STATE
+		WHERE
+					SCHED_NAME=#{schedName}  and 					INSTANCE_NAME=#{instanceName} 			</delete>
+
+		<!-- delete(ids)  -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		DELETE FROM qrtz_scheduler_state
+		WHERE
+					SCHED_NAME=#{schedName}  and 					INSTANCE_NAME=#{instanceName} 			</delete>
+
+</mapper>
